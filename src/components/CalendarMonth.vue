@@ -179,9 +179,11 @@ export default {
       this.showModal = false
     },
     closeModal(value){
-      if(value.data){
+      if(value == undefined){
+         return
+      }else if(value.data){
           this.meetingSlots.push(value)
-          this.meetingData  = this.meetingSlots.slice()
+          this.meetingData  = this.meetingSlots.slice()  
       }
       this.showModal = false
     },

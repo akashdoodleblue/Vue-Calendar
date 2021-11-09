@@ -131,6 +131,7 @@ export default {
   background-color: #fff;
   color: var(--grey-800);
   padding: 5px;
+  overflow: hidden;
 }
 
 .calendar-day > span {
@@ -166,7 +167,11 @@ export default {
 }
 
 .meetingDay button{
-    width: 100%;
+      text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    width: 100% !important;
     border: none;
     background-color: #336699;
     color: white;

@@ -12,7 +12,7 @@
 
               <div class="modal-body">
                 <div class="calendar-time">
-                    <div v-for="i in time" :key="i" class="calendar-item" @click="calendarItemClicked(i)">
+                    <div v-for="(i,index) in time" :key="index" class="calendar-item" @click="calendarItemClicked(i)">
                         <div style="color:#5b5e65">{{i}}</div>
                             <div class="calendar-line"></div>	
                     </div>
@@ -45,7 +45,7 @@
 
 <script>
 import EventModal from "./EventModal";
-const time = ["01 am","02 am","03 am","04 am","05 am","06 am","07 am","08 am","09 am","10 am","11 am","12 pm","01 pm","02 pm","03 pm","04 pm","05 pm","06 pm"];
+const time = ["01 am",'',"02 am",'',"03 am",'',"04 am",'',"05 am","06 am","07 am","08 am","09 am","10 am","11 am","12 pm","01 pm","02 pm","03 pm","04 pm","05 pm","06 pm","07 pm","08 pm","09 pm","10 pm","11 pm"];
 export default {
   name: "Modal",
    components: {
@@ -192,10 +192,15 @@ export default {
   margin-bottom: 10px;
 }
 
-.calendar-line{
+.calendar-item:nth-child(odd){
  border-bottom: 0.5px solid #e9eaec;
  width:95%;
  height : 16px;
+ 
+}
+
+.calendar-line:active{
+  background-color: aliceblue;
 }
 
 #canvas{
