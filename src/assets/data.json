@@ -1,0 +1,86 @@
+[
+    {
+        "id":1,
+        "name":"Akash",
+        "email": "akash@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":2,
+        "name":"Logan",
+        "email": "logan@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":3,
+        "name":"Adam",
+        "email": "adam@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":4,
+        "name":"Max",
+        "email": "max@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":5,
+        "name":"Otis",
+        "email": "otis@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":6,
+        "name":"Maverick",
+        "email": "maverick@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":7,
+        "name":"Rowan",
+        "email": "rowan@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":8,
+        "name":"Stellan",
+        "email": "stellan@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":9,
+        "name":"Felix",
+        "email": "felix@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":10,
+        "name":"Diego",
+        "email": "diego@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":11,
+        "name":"Asher",
+        "email": "asher@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":12,
+        "name":"Ella",
+        "email": "ella@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":13,
+        "name":"Hazel",
+        "email": "hazel@gmail.com",
+        "slots" : []
+    },
+    {
+        "id":14,
+        "name":"Luna",
+        "email": "luna@gmail.com",
+        "slots" : []
+    }
+]
