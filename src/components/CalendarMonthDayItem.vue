@@ -9,8 +9,10 @@
   >
  
     <span>{{ label }}</span>
- <div class="meetingDay" v-if="meeting">
-      <button v-for="(value,index) in meetingDay" :key="index" @click="onMeetinClicked($event,index)">{{`${value.data.fromTime} / ${value.data.title}`}}</button>
+ <div class="meetingDay" >
+      <span v-for="(value,index) in meetingDay" :key="index">
+        <button v-if="value.visible"  @click="onMeetinClicked($event,index)">{{`${value.data.fromTime} / ${value.data.title}`}}</button>
+      </span>
     <div v-if="showModal">
         <EventModal
         @close="closeModal"
@@ -36,14 +38,11 @@ export default {
     return {
       showModal : false,
       meetingDay : [],
-      meeting:null,
       meetIndex : null
     };
   },
   mounted(){
        this.meetingDay  = this.meetingSlots.filter(e => e.date == this.day.date)
-       this.meeting = this.meetingDay.length > 0  ? true : false
-
   },
   props: {
     day: {
@@ -71,25 +70,11 @@ export default {
    watch: { 
         currentUser:function(newVal, oldVal){
           // console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-          this.meetingDay  = this.meetingSlots.filter(e => e.date == this.day.date)
-          if(this.meetingDay.length > 0){
-            let index = this.meetingSlots.findIndex(e => e.date == this.day.date)
-            console.log(index)
-            console.log(this.meetingSlots[index])
-            console.log(newVal)
-            if(this.meetingSlots[index].data.access == 'Private' && (!this.meetingSlots[index].data.guestList.includes(newVal.name)) && this.meetingSlots[index].data.host != this.currentUser.name){
-              this.meeting = false
-            }else{
-              this.meeting = true
-            }
-          }else{
-            this.meeting = false
-          }
+          this.showMeeting(newVal)
         },
       	meetingSlots: function(newVal, oldVal) { // watch it
           //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-        this.meetingDay  = newVal.filter(e => e.date == this.day.date)
-        this.meeting = this.meetingDay.length > 0  ? true : false
+        this.showMeeting(newVal)
       }
    },   
   methods : {
@@ -99,7 +84,6 @@ export default {
     },
     onMeetinClicked(e,value){
       //e.preventDefault()
-      console.log(value)
       e.stopPropagation()
       this.showModal =true
       this.meetIndex  = value
@@ -111,8 +95,19 @@ export default {
     },
     closeModal(value){
         this.showModal = false
-   
-      }
+    },
+    showMeeting(newVal){
+    
+            this.meetingDay = this.meetingSlots.filter(e => e.date == this.day.date)
+            for(let i = 0; i < this.meetingDay.length; i++ ){
+              if(this.meetingDay[i].data.access == 'Private' && (!this.meetingDay[i].data.guestList.includes(newVal.name)) && this.meetingDay[i].data.host != this.currentUser.name){
+                  this.meetingDay[i]['visible'] = false
+              }else{
+                 this.meetingDay[i]['visible'] = true
+              }
+            }
+          
+    }
   },
 
   computed: {

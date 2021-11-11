@@ -43,7 +43,7 @@
                     
                   </div>
                   <div class="meeting-item">
-                    <p class="label">&#128188; Sharing setting</p>
+                    <p class="label">&#128188; Privacy setting</p>
                     <div class="value time-slot">
                       <select class="select-dropdown" v-model="eventData.status">
                         <option value="Busy">Busy</option>
@@ -80,7 +80,7 @@ export default {
       type: Object
     },
     time: {
-      type : String
+      type : [String,Array]
     },
     meeting : {
       type : Object,
@@ -130,13 +130,30 @@ export default {
     }, 
     getFromTime(){
       this.getTime()
-      let arr = this.timeSlots.slice()
-      let time = this.time.split(" ")
-      let index = arr.findIndex(e => (e.substring(0,2) == time[0] && e.substring(e.length - 2) == time[1]))
-      this.eventData.fromTime = arr[index]
-      this.eventData.toTime = arr[index + 1]
-      //return arr     
-      this.timeRange = arr
+      console.log(typeof this.time)
+      if(typeof this.time == 'object'){
+          let arr = this.timeSlots.slice()
+          let time = this.time[0].split(" ")
+          let index = arr.findIndex(e => (e.substring(0,2) == time[0] && e.substring(e.length - 2) == time[1]))
+          this.eventData.fromTime = arr[index]
+          if(this.time[1]){
+            time = this.time[1].split(" ")
+            index = arr.findIndex(e => (e.substring(0,2) == time[0] && e.substring(e.length - 2) == time[1]))
+            this.eventData.toTime = arr[index]
+          }else{
+            this.eventData.toTime = arr[index + 1]  
+          }
+          
+          this.timeRange = arr
+      }else{
+          let arr = this.timeSlots.slice()
+          let time = this.time.split(" ")
+          let index = arr.findIndex(e => (e.substring(0,2) == time[0] && e.substring(e.length - 2) == time[1]))
+          this.eventData.fromTime = arr[index]
+          this.eventData.toTime = arr[index + 1]
+          this.timeRange = arr
+      }
+
     },
   }, 
   methods : {

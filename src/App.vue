@@ -23,7 +23,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 
 body {
@@ -35,6 +35,7 @@ body {
   --grey-800: #3e4e63;
   --grid-gap: 1px;
   --day-label-size: 20px;
+  overflow-y: hidden;
 }
 
 ol,

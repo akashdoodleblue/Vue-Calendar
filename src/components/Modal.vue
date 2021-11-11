@@ -11,22 +11,16 @@
               </div>
 
               <div class="modal-body">
-                <div class="calendar-time">
+                <div class="calendar-time" id="calendar-time"  @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
+                    <div v-show="showBox" class="drag-calendar" ref="d-calendar" id="d-calendar">
+                      <p class="inner-time">{{typeof timeSlot == 'object' ?  `${timeSlot[0]} - ${timeSlot[1] || ''}` :  ''}}</p>
+                    </div>
                     <div v-for="(i,index) in time" :key="index" class="calendar-item" @click="calendarItemClicked(i)">
-                        <div style="color:#5b5e65">{{i}}</div>
+                        <div class="calendar-slot" style="color:#5b5e65">{{i}}</div>
                             <div class="calendar-line"></div>	
                     </div>
                 </div>
                 <!-- <canvas ref="canvas" id="canvas" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp"></canvas> -->
-              </div>
-
-              <div class="modal-footer">
-                <slot name="footer">
-                  default footer
-                  <button class="modal-default-button" @click="$emit('close',false)">
-                    OK
-                  </button>
-                </slot>
               </div>
             </div>
           </div>
@@ -45,7 +39,10 @@
 
 <script>
 import EventModal from "./EventModal";
-const time = ["01 am",'',"02 am",'',"03 am",'',"04 am",'',"05 am","06 am","07 am","08 am","09 am","10 am","11 am","12 pm","01 pm","02 pm","03 pm","04 pm","05 pm","06 pm","07 pm","08 pm","09 pm","10 pm","11 pm"];
+var calendarBox
+const time = ["01 am","02 am","03 am","04 am","05 am","06 am","07 am","08 am","09 am","10 am","11 am","12 pm","01 pm","02 pm","03 pm","04 pm","05 pm","06 pm","07 pm","08 pm","09 pm","10 pm","11 pm"];
+let Xstart
+let Ystart
 export default {
   name: "Modal",
    components: {
@@ -63,11 +60,10 @@ export default {
   data(){
       return{
           canvas : null,
-          ctx : '',
-          rect : {},
           drag : false,
+          showBox:false,
           eventModal: false,
-          timeSlot:null
+          timeSlot:''
       }
   },
   computed: {
@@ -79,38 +75,73 @@ export default {
     }
   },
   mounted(){
-  // this.canvas = document.getElementById("canvas");
-  // this.ctx = this.canvas.getContext("2d");  
+   this.canvas = document.getElementById("d-calendar");
+   calendarBox = document.getElementById("calendar-time");
   },
   methods : {
        mouseDown(e) { 
-       this.rect.startX = e.offsetX;
-        this.rect.startY = e.offsetY - 0 ;
-       this.drag = true;
+        this.drag = true;
+        this.showBox = true
+        Xstart = e.pageX - 5
+        Ystart = e.pageY - 5
+        this.canvas.style.top = `${e.layerY - 5}px`
+        this.canvas.style.left = `60px`
+       
+        
       },
     
-       mouseUp() {
-        this.drag = false;
-        this.rect = {}
-        //this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+       mouseUp(e) {
+         this.canvas.style.top = this.canvas.style.top;
+         this.canvas.style.left = '60px';
+          if(typeof this.timeSlot == 'string'){
+            this.canvas.style.height = '0px'
+            this.canvas.style.width = '0px'
+          }else{
+            this.canvas.style.height = this.canvas.style.height;
+            this.canvas.style.width = this.canvas.style.width;
+          }
+          this.drag = false;
+         setTimeout(() =>{
+            this.eventModal = true
+        },500);
       },
         mouseMove(e) {
         if (this.drag) {
-            this.rect.w = (e.offsetX);
-            this.rect.h = (e.offsetY );
-            this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-            this.draw();
+          if(e.target.children.length > 0  && e.target.children[0].innerHTML.length == 5){
+            if(this.timeSlot.length == 0){
+              this.timeSlot = [e.target.children[0].innerHTML]
+            }else if(this.timeSlot.length == 2){
+              this.timeSlot[1] = (e.target.children[0].innerHTML)
+            }else{
+              this.timeSlot.push(e.target.children[0].innerHTML)
+            }
+            
+          }
+          if (e.pageX > Xstart) {
+                this.canvas.style.width = calendarBox.offsetWidth - 60 + 'px'
+            } else {
+                this.canvas.style.left = 60 + 'px'
+                this.canvas.style.width = calendarBox.offsetWidth - 60 + 'px'
+            }
+            if (event.pageY > Ystart) {
+                this.canvas.style.height = e.pageY-Ystart + 'px'
+            } else {
+                this.canvas.style.top = e.pageY + 'px'
+                this.canvas.style.height = Ystart-e.pageY + 'px'
+            }
         }
       },
-        draw() {
-        this.ctx.setLineDash([0]);
-        this.ctx.strokeRect(this.rect.startX,this.rect.startY, -989, this.rect.h);
-       },
        calendarItemClicked(i){
          this.timeSlot = i
          this.eventModal = true
        },
         closeModal(value){
+             this.showBox = false
+             this.canvas.style.height = '0px'
+             this.canvas.style.width = '0px'
+             this.canvas.style.top = '0px'
+             this.canvas.style.left = '0px'
+             this.timeSlot = ''
         this.eventModal = false
         this.$emit('close',value)
       }
@@ -146,6 +177,7 @@ export default {
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .modal-header{
@@ -183,8 +215,7 @@ export default {
   transform: scale(1.1);
 }
 .calendar-time{
-  height: 600px;
-  overflow-y: scroll
+  position: relative;
 }
 .calendar-item{
 	display: flex;
@@ -192,23 +223,26 @@ export default {
   margin-bottom: 10px;
 }
 
-.calendar-item:nth-child(odd){
+.calendar-line{
  border-bottom: 0.5px solid #e9eaec;
  width:95%;
  height : 16px;
  
 }
-
-.calendar-line:active{
-  background-color: aliceblue;
+.drag-calendar{
+  background-color: #336699;
+  border-radius: 5px;
+  position: absolute;
 }
 
-#canvas{
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 95%;
-    }
+.inner-time{
+  display: flex;
+    margin-left: 20px;
+    color: white;
+}
+.calendar-slot{
+  user-select: none;
+}
+
 
 </style>
